@@ -4,8 +4,8 @@
 // This is also where we define functions to modify the state.
 
 // TODO: Add support for more colors
-const colors = ["red", "green", "blue"];
-const sizes = ["small", "medium", "large"];
+const colors = ["red", "green", "blue", "orange", "yellow", "purple"];
+const sizes = ["small", "medium", "large", "xlarge"];
 const maxShapes = 10;
 const shapes = [
   {
@@ -23,7 +23,8 @@ function addShape() {
   const color = colors[Math.floor(Math.random() * colors.length)];
 
   // TODO: Randomize the size of the shape
-  const size = "small";
+  // const size = "small";
+  const size = sizes[Math.floor(Math.random()* sizes.length)]
 
   shapes.push({ color, size });
 }
@@ -44,6 +45,13 @@ function render() {
   squareList.replaceChildren(...squareElements);
 
   // TODO: Render the circles
+  const circleList = document.querySelector('#circles');
+  const circleElements = shapes.map((shape)=> {
+    const circleElement = document.createElement("li");
+    circleElement.classList.add(shape.color, shape.size);
+    return circleElement;
+  });
+  circleList.replaceChildren(...circleElements);
 }
 
 // === Script ===
@@ -52,9 +60,20 @@ function render() {
 // `setInterval` will call the callback function every 1000 milliseconds (1 second)
 // and return an interval ID that we can use to stop the interval later.
 // Calling `clearInterval(addShapeIntervalId)` will stop the interval.
+
 const addShapeIntervalId = setInterval(() => {
-  addShape();
-  render();
+  
+  if (shapes.length < maxShapes/2) {
+    addShape();
+    render();
+    document.querySelector('#counter').textContent = shapes.length*2;
+  } else {
+    const congrats = document.querySelector('#congrats');
+    const element = document.createElement("p");
+    element.innerHTML = "Congrats! You've reached the end!";
+    congrats.appendChild(element);
+    clearInterval(addShapeIntervalId);
+  }
 
   // TODO: Stop adding shapes if we've reached the maximum number of shapes
 }, 1000);
